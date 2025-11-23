@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp">
 
     <TextView
@@ -16,10 +17,12 @@
         android:textStyle="bold" />
 
     <Button
+        android:id="@+id/buttonViewTrips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/add_new_trip" />
+        android:text="@string/view_my_trips" />
+
 
 
 </LinearLayout>
