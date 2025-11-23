@@ -49,12 +49,34 @@ public class ViewItemsActivity extends AppCompatActivity {
 
         tripPosition = getIntent().getIntExtra("TRIP_POSITION", -1);
         if (tripPosition == -1) {
+            Log.e(TAG, "Invalid trip position: -1");
             Toast.makeText(this, "Error loading trip", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        currentTrip = tripRepository.getAllTrips().get(tripPosition);
+        java.util.List<Trip> allTrips = tripRepository.getAllTrips();
+        if (allTrips == null || allTrips.isEmpty()) {
+            Log.e(TAG, "Trip list is empty");
+            Toast.makeText(this, "No trips available", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        if (tripPosition < 0 || tripPosition >= allTrips.size()) {
+            Log.e(TAG, "Trip position out of bounds: " + tripPosition);
+            Toast.makeText(this, "Trip not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        currentTrip = allTrips.get(tripPosition);
+        if (currentTrip == null) {
+            Log.e(TAG, "Trip is null at position: " + tripPosition);
+            Toast.makeText(this, "Error loading trip details", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         initializeViews();
         setupListView();
@@ -197,4 +219,3 @@ public class ViewItemsActivity extends AppCompatActivity {
         }
     }
 }
-

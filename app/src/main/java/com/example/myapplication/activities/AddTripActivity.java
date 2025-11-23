@@ -125,7 +125,7 @@ public class AddTripActivity extends AppCompatActivity {
                         int year = Integer.parseInt(dateParts[2]);
                         datePicker.updateDate(year, month, day);
                     } catch (NumberFormatException e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "Error parsing date: " + tripDate, e);
                     }
                 }
             }
@@ -146,12 +146,46 @@ public class AddTripActivity extends AppCompatActivity {
 
             if (title.isEmpty()) {
                 editTextTitle.setError("Title is required");
+                editTextTitle.requestFocus();
+                return;
+            }
+
+            if (title.length() > 100) {
+                editTextTitle.setError("Title too long (max 100 characters)");
+                editTextTitle.requestFocus();
+                return;
+            }
+
+            if (description.length() > 500) {
+                editTextDescription.setError("Description too long (max 500 characters)");
+                editTextDescription.requestFocus();
                 return;
             }
 
             int day = datePicker.getDayOfMonth();
             int month = datePicker.getMonth() + 1;
             int year = datePicker.getYear();
+
+            java.util.Calendar selectedDate = java.util.Calendar.getInstance();
+            selectedDate.set(year, month - 1, day, 0, 0, 0);
+            selectedDate.set(java.util.Calendar.MILLISECOND, 0);
+
+            java.util.Calendar today = java.util.Calendar.getInstance();
+            today.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            today.set(java.util.Calendar.MINUTE, 0);
+            today.set(java.util.Calendar.SECOND, 0);
+            today.set(java.util.Calendar.MILLISECOND, 0);
+
+            if (selectedDate.before(today)) {
+                Toast.makeText(this, "Cannot select a date in the past", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (year < 1900 || year > 2100) {
+                Toast.makeText(this, "Please select a valid year (1900-2100)", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             String date = day + "/" + month + "/" + year;
 
             Trip trip = new Trip(title, description, date);
@@ -208,18 +242,41 @@ public class AddTripActivity extends AppCompatActivity {
 
             if (itemName.isEmpty()) {
                 editTextItemName.setError("Item name is required");
+                editTextItemName.requestFocus();
                 return;
             }
 
-            int quantity = Integer.parseInt(quantityStr);
-            Item newItem = new Item(itemName, quantity, description, category);
-            packingItems.add(newItem);
+            if (itemName.length() > 50) {
+                editTextItemName.setError("Item name too long (max 50 characters)");
+                editTextItemName.requestFocus();
+                return;
+            }
 
-            itemAdapter.notifyDataSetChanged();
-            updateEmptyView();
+            if (description.length() > 200) {
+                editTextItemDescription.setError("Description too long (max 200 characters)");
+                editTextItemDescription.requestFocus();
+                return;
+            }
 
-            Toast.makeText(this, "Item added successfully", Toast.LENGTH_SHORT).show();
-            dialog.dismiss();
+            try {
+                int quantity = Integer.parseInt(quantityStr);
+                if (quantity < 1 || quantity > 999) {
+                    Toast.makeText(this, "Quantity must be between 1 and 999", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Item newItem = new Item(itemName, quantity, description, category);
+                packingItems.add(newItem);
+
+                itemAdapter.notifyDataSetChanged();
+                updateEmptyView();
+
+                Toast.makeText(this, "Item added successfully", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Error parsing quantity", e);
+                Toast.makeText(this, "Invalid quantity value", Toast.LENGTH_SHORT).show();
+            }
         });
 
         buttonCancel.setOnClickListener(v -> dialog.dismiss());

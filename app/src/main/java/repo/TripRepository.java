@@ -53,12 +53,23 @@ public class TripRepository {
 
     private void loadTripsFromPreferences() {
         String json = sharedPreferences.getString(KEY_TRIPS, null);
-        if (json != null) {
-            Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
-            ArrayList<Trip> loadedTrips = gson.fromJson(json, type);
-            tripList.clear();
-            tripList.addAll(loadedTrips);
-            Log.d(TAG, "Loaded " + tripList.size() + " trips from SharedPreferences");
+        if (json != null && !json.isEmpty()) {
+            try {
+                Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
+                ArrayList<Trip> loadedTrips = gson.fromJson(json, type);
+                if (loadedTrips != null) {
+                    tripList.clear();
+                    tripList.addAll(loadedTrips);
+                    Log.d(TAG, "Loaded " + tripList.size() + " trips from SharedPreferences");
+                } else {
+                    Log.w(TAG, "Loaded trips list is null");
+                }
+            } catch (com.google.gson.JsonSyntaxException e) {
+                Log.e(TAG, "Error parsing JSON, clearing corrupted data", e);
+                sharedPreferences.edit().remove(KEY_TRIPS).apply();
+            } catch (Exception e) {
+                Log.e(TAG, "Unexpected error loading trips", e);
+            }
         } else {
             Log.d(TAG, "No saved trips found");
         }
@@ -73,6 +84,14 @@ public class TripRepository {
     }
 
     public void addTrip(Trip trip) {
+        if (trip == null) {
+            Log.e(TAG, "Cannot add null trip");
+            return;
+        }
+        if (trip.getTripName() == null || trip.getTripName().trim().isEmpty()) {
+            Log.e(TAG, "Cannot add trip with empty name");
+            return;
+        }
         tripList.add(trip);
         saveTripsToPreferences();
         Log.d(TAG, "Added trip: " + trip.getTripName());
