@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="welcome_to_my_app">Welcome to My App</string>
+    <string name="add_new_trip">Add new Trip</string>
+</resources>
