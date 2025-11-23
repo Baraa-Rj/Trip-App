@@ -8,24 +8,27 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.myapplication.R;
 
-import java.util.ArrayList;
 
 import adapter.TripAdapter;
-import entity.Trip;
+
+import repo.TripRepository;
 
 public class ViewTripActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RadioGroup radioGroup;
     private TripAdapter adapter;
     private ImageButton buttonBack;
+    TripRepository tripRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_trip);
+        tripRepository = TripRepository.getInstance();
         initializeViews();
-        loadData();
     }
 
     private void initializeViews() {
@@ -43,43 +46,28 @@ public class ViewTripActivity extends AppCompatActivity {
         radioGroup = findViewById(R.id.radioGroupTrips);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioToday) {
-                loadFilteredData("today");
+                adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.TODAY));
             } else if (checkedId == R.id.radioThisWeek) {
-                loadFilteredData("week");
+                adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.THIS_WEEK));
             } else if (checkedId == R.id.radioThisMonth) {
-                loadFilteredData("month");
+                adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.THIS_MONTH));
             } else if (checkedId == R.id.radioThisYear) {
-                loadFilteredData("year");
+                adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.THIS_YEAR));
             }
         });
     }
-    private void loadData(){
-        loadFilteredData("today");
-    }
 
-    private void loadFilteredData(String filter) {
-        ArrayList<Trip> trips = new ArrayList<>();
-        switch (filter) {
-            case "today":
-                trips.add(new Trip("Beach Vacation", "Hawaii", "2023-12-20"));
-                break;
-            case "week":
-                trips.add(new Trip("Beach Vacation", "Hawaii", "2023-12-20"));
-                trips.add(new Trip("Mountain Hiking", "Colorado", "2024-01-15"));
-                break;
-            case "month":
-                trips.add(new Trip("Beach Vacation", "Hawaii", "2023-12-20"));
-                trips.add(new Trip("Mountain Hiking", "Colorado", "2024-01-15"));
-                trips.add(new Trip("City Tour", "New York", "2025-11-10"));
-                break;
-            case "year":
-                trips.add(new Trip("Beach Vacation", "Hawaii", "2023-12-20"));
-                trips.add(new Trip("Mountain Hiking", "Colorado", "2024-01-15"));
-                trips.add(new Trip("City Tour", "New York", "2025-11-10"));
-                trips.add(new Trip("Safari Adventure", "Kenya", "2025-08-05"));
-                break;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (radioGroup.getCheckedRadioButtonId() == R.id.radioToday) {
+            adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.TODAY));
+        } else if (radioGroup.getCheckedRadioButtonId() == R.id.radioThisWeek) {
+            adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.THIS_WEEK));
+        } else if (radioGroup.getCheckedRadioButtonId() == R.id.radioThisMonth) {
+            adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.THIS_MONTH));
+        } else if (radioGroup.getCheckedRadioButtonId() == R.id.radioThisYear) {
+            adapter.updateData(tripRepository.getFilteredTrips(TripRepository.FilterType.THIS_YEAR));
         }
-        adapter.updateData(trips);
     }
-
 }

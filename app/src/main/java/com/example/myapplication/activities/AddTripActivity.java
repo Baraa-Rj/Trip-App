@@ -63,14 +63,25 @@ public class AddTripActivity extends AppCompatActivity {
     private void initializeListeners() {
         buttonBack.setOnClickListener(v -> finish());
         buttonSaveTrip.setOnClickListener(v -> {
-            String title = editTextTitle.getText().toString();
-            String description = editTextDescription.getText().toString();
+            String title = editTextTitle.getText().toString().trim();
+            String description = editTextDescription.getText().toString().trim();
+
+            // Validate input
+            if (title.isEmpty()) {
+                editTextTitle.setError("Title is required");
+                return;
+            }
+
             int day = datePicker.getDayOfMonth();
             int month = datePicker.getMonth() + 1;
             int year = datePicker.getYear();
             String date = day + "/" + month + "/" + year;
-            tripRepository.addTrip(new Trip(title, date, description));
+
+            Trip newTrip = new Trip(title, description, date);
+            tripRepository.addTrip(newTrip);
+
             Toast.makeText(this, "Trip Saved", Toast.LENGTH_SHORT).show();
+            finish(); // Close activity and return to previous screen
         });
     }
 }
