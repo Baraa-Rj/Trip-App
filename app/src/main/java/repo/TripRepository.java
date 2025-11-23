@@ -1,11 +1,23 @@
 package repo;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import entity.Trip;
 
 public class TripRepository {
+    private static final String TAG = "TripRepository";
+    private static final String PREFS_NAME = "TripAppPreferences";
+    private static final String KEY_TRIPS = "trips_list";
+
     public enum FilterType {
         TODAY,
         THIS_WEEK,
@@ -15,9 +27,12 @@ public class TripRepository {
 
     private static TripRepository instance;
     private final List<Trip> tripList;
+    private SharedPreferences sharedPreferences;
+    private Gson gson;
 
     private TripRepository() {
-        tripList = new java.util.ArrayList<>();
+        tripList = new ArrayList<>();
+        gson = new Gson();
     }
 
     public static synchronized TripRepository getInstance() {
@@ -27,20 +42,56 @@ public class TripRepository {
         return instance;
     }
 
+    public void initialize(Context context) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getApplicationContext()
+                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            loadTripsFromPreferences();
+            Log.d(TAG, "Repository initialized");
+        }
+    }
+
+    private void loadTripsFromPreferences() {
+        String json = sharedPreferences.getString(KEY_TRIPS, null);
+        if (json != null) {
+            Type type = new TypeToken<ArrayList<Trip>>(){}.getType();
+            ArrayList<Trip> loadedTrips = gson.fromJson(json, type);
+            tripList.clear();
+            tripList.addAll(loadedTrips);
+            Log.d(TAG, "Loaded " + tripList.size() + " trips from SharedPreferences");
+        } else {
+            Log.d(TAG, "No saved trips found");
+        }
+    }
+
+    private void saveTripsToPreferences() {
+        if (sharedPreferences != null) {
+            String json = gson.toJson(tripList);
+            sharedPreferences.edit().putString(KEY_TRIPS, json).apply();
+            Log.d(TAG, "Saved " + tripList.size() + " trips to SharedPreferences");
+        }
+    }
+
     public void addTrip(Trip trip) {
         tripList.add(trip);
+        saveTripsToPreferences();
+        Log.d(TAG, "Added trip: " + trip.getTripName());
     }
 
     public List<Trip> getAllTrips() {
-        return new java.util.ArrayList<>(tripList);
+        return new ArrayList<>(tripList);
     }
 
     public void clearTrips() {
         tripList.clear();
+        saveTripsToPreferences();
+        Log.d(TAG, "Cleared all trips");
     }
 
     public void removeTrip(Trip trip) {
         tripList.remove(trip);
+        saveTripsToPreferences();
+        Log.d(TAG, "Removed trip: " + trip.getTripName());
     }
 
     public ArrayList<Trip> getFilteredTrips(FilterType filterType) {
@@ -83,7 +134,7 @@ public class TripRepository {
                     filteredTrips.add(trip);
                 }
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error parsing date: " + tripDate, e);
             }
         }
 

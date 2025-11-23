@@ -1,5 +1,6 @@
 package com.example.myapplication.activities;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,6 +25,7 @@ import entity.Trip;
 import repo.TripRepository;
 
 public class AddTripActivity extends AppCompatActivity {
+    private static final String TAG = "AddTripActivity";
 
     private Button buttonSaveTrip;
     private Button buttonAddItem;
@@ -43,8 +45,10 @@ public class AddTripActivity extends AppCompatActivity {
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate() called");
         setContentView(com.example.myapplication.R.layout.activity_add_trip);
         tripRepository = TripRepository.getInstance();
+        tripRepository.initialize(this);
         packingItems = new ArrayList<>();
         initializeViews();
         loadEditData();
@@ -55,21 +59,31 @@ public class AddTripActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart() called");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume() called");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
     }
 
     private void initializeViews() {
