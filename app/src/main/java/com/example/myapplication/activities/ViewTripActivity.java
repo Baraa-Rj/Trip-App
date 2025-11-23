@@ -70,7 +70,11 @@ public class ViewTripActivity extends AppCompatActivity {
         adapter = new TripAdapter();
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(trip -> {
-            Toast.makeText(this, "Clicked: " + trip.getTripName(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, ViewTripItemsActivity.class);
+            intent.putExtra("TRIP_NAME", trip.getTripName());
+            intent.putExtra("TRIP_DESTINATION", trip.getTripDestination());
+            intent.putExtra("TRIP_DATE", trip.getTripDate());
+            startActivity(intent);
         });
 
         adapter.setOnEditClickListener(this::handleEditTrip);

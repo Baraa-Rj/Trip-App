@@ -34,6 +34,12 @@ public class TripAdapter extends RecyclerView.Adapter<TripViewHolder> {
 
         holder.bindData(trip.getTripName(), trip.getTripDate(), trip.getTripDestination());
 
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(trip);
+            }
+        });
+
         holder.getButtonEdit().setOnClickListener(v -> {
             if (editClickListener != null) {
                 editClickListener.onEditClick(trip, position);

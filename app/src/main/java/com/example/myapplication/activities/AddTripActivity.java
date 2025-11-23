@@ -115,8 +115,7 @@ public class AddTripActivity extends AppCompatActivity {
             Trip trip = new Trip(title, description, date);
 
             if (isEditMode && originalTrip != null) {
-                tripRepository.removeTrip(originalTrip);
-                tripRepository.addTrip(trip);
+                tripRepository.updateTrip(originalTrip, trip);
                 Toast.makeText(this, "Trip Updated", Toast.LENGTH_SHORT).show();
             } else {
                 tripRepository.addTrip(trip);

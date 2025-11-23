@@ -43,6 +43,26 @@ public class TripRepository {
         tripList.remove(trip);
     }
 
+    public Trip findTrip(String tripName, String tripDestination, String tripDate) {
+        for (Trip trip : tripList) {
+            if (trip.getTripName().equals(tripName) &&
+                trip.getTripDestination().equals(tripDestination) &&
+                trip.getTripDate().equals(tripDate)) {
+                return trip;
+            }
+        }
+        return null;
+    }
+
+    public void updateTrip(Trip oldTrip, Trip newTrip) {
+        int index = tripList.indexOf(oldTrip);
+        if (index != -1) {
+            // Preserve items from old trip
+            newTrip.setItems(oldTrip.getItems());
+            tripList.set(index, newTrip);
+        }
+    }
+
     public ArrayList<Trip> getFilteredTrips(FilterType filterType) {
         ArrayList<Trip> filteredTrips = new java.util.ArrayList<>();
         java.util.Calendar calendar = java.util.Calendar.getInstance();

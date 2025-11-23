@@ -26,6 +26,12 @@
         <activity
             android:name=".activities.AddTripActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.ViewTripItemsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AddItemActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
