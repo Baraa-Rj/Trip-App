@@ -94,7 +94,6 @@ public class AddTripActivity extends AppCompatActivity {
 
             if (tripPosition != -1) {
                 originalTrip = tripRepository.getAllTrips().get(tripPosition);
-                // Load existing items
                 packingItems.addAll(originalTrip.getItems());
             } else {
                 originalTrip = new Trip(tripName, tripDestination, tripDate);
@@ -108,7 +107,7 @@ public class AddTripActivity extends AppCompatActivity {
                 if (dateParts.length == 3) {
                     try {
                         int day = Integer.parseInt(dateParts[0]);
-                        int month = Integer.parseInt(dateParts[1]) - 1; // Month is 0-based
+                        int month = Integer.parseInt(dateParts[1]) - 1;
                         int year = Integer.parseInt(dateParts[2]);
                         datePicker.updateDate(year, month, day);
                     } catch (NumberFormatException e) {
@@ -143,7 +142,6 @@ public class AddTripActivity extends AppCompatActivity {
 
             Trip trip = new Trip(title, description, date);
 
-            // Add all packing items to the trip
             for (Item item : packingItems) {
                 trip.addItem(item);
             }
@@ -166,7 +164,6 @@ public class AddTripActivity extends AppCompatActivity {
         listViewPackingItems.setAdapter(itemAdapter);
 
         itemAdapter.setOnItemCheckedListener(() -> {
-            // Item checked state changed
         });
 
         itemAdapter.setOnDeleteClickListener(this::showDeleteItemDialog);

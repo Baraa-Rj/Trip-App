@@ -43,7 +43,6 @@ public class ViewItemsActivity extends AppCompatActivity {
 
         tripRepository = TripRepository.getInstance();
 
-        // Get trip position from intent
         tripPosition = getIntent().getIntExtra("TRIP_POSITION", -1);
         if (tripPosition == -1) {
             Toast.makeText(this, "Error loading trip", Toast.LENGTH_SHORT).show();

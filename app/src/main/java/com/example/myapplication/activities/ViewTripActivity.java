@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -25,10 +26,11 @@ public class ViewTripActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     private TripAdapter adapter;
     private ImageButton buttonBack;
+    private SearchView searchViewTrips;
     TripRepository tripRepository;
 
-    // RadioButtons for manual selection handling
     private RadioButton radioAll, radioToday, radioThisWeek, radioThisMonth, radioThisYear;
+    private String currentSearchQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,29 +75,35 @@ public class ViewTripActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         adapter = new TripAdapter();
         recyclerView.setAdapter(adapter);
+
         adapter.setOnItemClickListener(trip -> {
-            Toast.makeText(this, "Clicked: " + trip.getTripName(), Toast.LENGTH_SHORT).show();
+            int position = tripRepository.getAllTrips().indexOf(trip);
+            if (position != -1) {
+                handleOpenItems(trip, position);
+            }
         });
 
         adapter.setOnEditClickListener(this::handleEditTrip);
 
         adapter.setOnDeleteClickListener(this::showDeleteConfirmationDialog);
 
-        adapter.setOnDoubleClickListener(this::handleDoubleClick);
 
         radioGroup = findViewById(R.id.radioGroupTrips);
+        searchViewTrips = findViewById(R.id.searchViewTrips);
 
-        // Initialize all RadioButtons
+        initializeRadioButtons();
+        setupRadioButtonListeners();
+        setupSearchView();
+
+        refreshTripList();
+    }
+
+    private void initializeRadioButtons() {
         radioAll = findViewById(R.id.radioAll);
         radioToday = findViewById(R.id.radioToday);
         radioThisWeek = findViewById(R.id.radioThisWeek);
         radioThisMonth = findViewById(R.id.radioThisMonth);
         radioThisYear = findViewById(R.id.radioThisYear);
-
-        // Set up custom click listeners for mutual exclusivity
-        setupRadioButtonListeners();
-
-        refreshTripList();
     }
 
     private void handleEditTrip(Trip trip, int position) {
@@ -108,7 +116,7 @@ public class ViewTripActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void handleDoubleClick(Trip trip, int position) {
+    private void handleOpenItems(Trip trip, int position) {
         Intent intent = new Intent(this, ViewItemsActivity.class);
         intent.putExtra("TRIP_POSITION", position);
         startActivity(intent);
@@ -164,6 +172,24 @@ public class ViewTripActivity extends AppCompatActivity {
         selected.setChecked(true);
     }
 
+    private void setupSearchView() {
+        searchViewTrips.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                currentSearchQuery = query;
+                refreshTripList();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                currentSearchQuery = newText;
+                refreshTripList();
+                return true;
+            }
+        });
+    }
+
     private void refreshTripList() {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         ArrayList<Trip> filteredTrips;
@@ -180,6 +206,26 @@ public class ViewTripActivity extends AppCompatActivity {
         } else {
             filteredTrips = new ArrayList<>(tripRepository.getAllTrips());
         }
+
+        if (!currentSearchQuery.isEmpty()) {
+            filteredTrips = searchTrips(filteredTrips, currentSearchQuery);
+        }
+
         adapter.updateData(filteredTrips);
+    }
+
+    private ArrayList<Trip> searchTrips(ArrayList<Trip> trips, String query) {
+        ArrayList<Trip> searchResults = new ArrayList<>();
+        String lowerCaseQuery = query.toLowerCase().trim();
+
+        for (Trip trip : trips) {
+            if (trip.getTripName().toLowerCase().contains(lowerCaseQuery) ||
+                trip.getTripDestination().toLowerCase().contains(lowerCaseQuery) ||
+                trip.getTripDate().contains(lowerCaseQuery)) {
+                searchResults.add(trip);
+            }
+        }
+
+        return searchResults;
     }
 }

@@ -68,7 +68,6 @@ public class ItemAdapter extends BaseAdapter {
         holder.textViewQuantity.setText("Qty: " + item.getItemQuantity());
         holder.textViewDescription.setText(item.getItemDescription());
 
-        // Apply strikethrough if packed
         if (item.isPacked()) {
             holder.textViewItemName.setPaintFlags(holder.textViewItemName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewItemName.setAlpha(0.6f);
@@ -77,11 +76,9 @@ public class ItemAdapter extends BaseAdapter {
             holder.textViewItemName.setAlpha(1.0f);
         }
 
-        // Set category background color
         setCategoryColor(holder.textViewCategory, item.getCategory());
 
-        // CheckBox listener
-        holder.checkBoxPacked.setOnCheckedChangeListener(null); // Clear previous listener
+        holder.checkBoxPacked.setOnCheckedChangeListener(null);
         holder.checkBoxPacked.setOnCheckedChangeListener((buttonView, isChecked) -> {
             item.setPacked(isChecked);
             if (onItemCheckedListener != null) {
@@ -90,7 +87,6 @@ public class ItemAdapter extends BaseAdapter {
             notifyDataSetChanged();
         });
 
-        // Delete button listener
         holder.buttonDelete.setOnClickListener(v -> {
             if (onDeleteClickListener != null) {
                 onDeleteClickListener.onDeleteClick(item, position);
@@ -104,28 +100,28 @@ public class ItemAdapter extends BaseAdapter {
         int color;
         switch (category) {
             case "Clothing":
-                color = 0xFF2196F3; // Blue
+                color = 0xFF2196F3;
                 break;
             case "Toiletries":
-                color = 0xFF4CAF50; // Green
+                color = 0xFF4CAF50;
                 break;
             case "Electronics":
-                color = 0xFFFF9800; // Orange
+                color = 0xFFFF9800;
                 break;
             case "Documents":
-                color = 0xFFF44336; // Red
+                color = 0xFFF44336;
                 break;
             case "Medicines":
-                color = 0xFF9C27B0; // Purple
+                color = 0xFF9C27B0;
                 break;
             case "Food & Snacks":
-                color = 0xFFFFEB3B; // Yellow
+                color = 0xFFFFEB3B;
                 break;
             case "Sports & Recreation":
-                color = 0xFF00BCD4; // Cyan
+                color = 0xFF00BCD4;
                 break;
             default:
-                color = 0xFF9E9E9E; // Gray
+                color = 0xFF9E9E9E;
                 break;
         }
         textView.setBackgroundColor(color);

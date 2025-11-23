@@ -4,6 +4,7 @@
     <string name="add_new_trip">Add new Trip</string>
     <string name="view_my_trips">View My Trips</string>
     <string name="my_trips_overview">My Trips Overview</string>
+    <string name="all_trips">All Trips</string>
     <string name="today">Today</string>
     <string name="this_week">This week</string>
     <string name="this_month">This Month</string>
@@ -30,6 +31,7 @@
     <string name="add_item">Add Item</string>
     <string name="add_item_button">+ Add Item</string>
     <string name="no_items_added">No items added yet</string>
+    <string name="search_trips">Search trips...</string>
     <string name="item_name">Item Name</string>
     <string name="category">Category</string>
     <string name="quantity">Quantity</string>
