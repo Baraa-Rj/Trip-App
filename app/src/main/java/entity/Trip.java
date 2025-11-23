@@ -34,4 +34,5 @@ public class Trip {
     public void setTripDate(String tripDate) {
         this.tripDate = tripDate;
     }
+
 }
