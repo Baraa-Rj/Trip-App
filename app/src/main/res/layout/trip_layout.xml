@@ -17,7 +17,7 @@
             android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Destination"
+            android:text="@string/destination"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -25,14 +25,14 @@
             android:id="@+id/textViewDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date"
+            android:text="@string/date"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/textViewDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Details"
+            android:text="@string/details"
             android:textSize="14sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
