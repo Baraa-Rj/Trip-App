@@ -8,10 +8,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import entity.Trip;
+import repo.TripRepository;
 
 public class AddTripActivity extends AppCompatActivity {
 
@@ -20,16 +20,13 @@ public class AddTripActivity extends AppCompatActivity {
     private EditText editTextDescription;
     private EditText editTextTitle;
     private ImageButton buttonBack;
-    private final List<Trip> tripList;
-
-    public AddTripActivity(ArrayList<Trip> tripList) {
-        this.tripList = tripList;
-    }
+    private TripRepository tripRepository;
 
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.example.myapplication.R.layout.activity_add_trip);
+        tripRepository = TripRepository.getInstance();
         initializeViews();
         initializeListeners();
     }
@@ -72,7 +69,7 @@ public class AddTripActivity extends AppCompatActivity {
             int month = datePicker.getMonth() + 1;
             int year = datePicker.getYear();
             String date = day + "/" + month + "/" + year;
-            tripList.add(new Trip(title, date, description));
+            tripRepository.addTrip(new Trip(title, date, description));
             Toast.makeText(this, "Trip Saved", Toast.LENGTH_SHORT).show();
         });
     }
