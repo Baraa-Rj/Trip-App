@@ -1,6 +1,7 @@
 package viewholder;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,24 +13,12 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     private TextView tripNameTextView;
     private TextView tripDateTextView;
     private TextView tripDescriptionTextView;
-    private OnItemClickListener listener;
+    private Button buttonEdit;
+    private Button buttonDelete;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
-
-    public TripViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+    public TripViewHolder(@NonNull View itemView) {
         super(itemView);
-        this.listener = listener;
         initializeViews();
-        itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                int position = getBindingAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(position);
-                }
-            }
-        });
     }
 
     public void bindData(String name, String date, String description) {
@@ -38,9 +27,19 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
         tripDescriptionTextView.setText(description);
     }
 
+    public Button getButtonEdit() {
+        return buttonEdit;
+    }
+
+    public Button getButtonDelete() {
+        return buttonDelete;
+    }
+
     private void initializeViews() {
-        tripDateTextView = itemView.findViewById(R.id.textViewDate);
-        tripNameTextView = itemView.findViewById(R.id.textViewTitle);
+        tripNameTextView = itemView.findViewById(R.id.textViewTripName);
         tripDescriptionTextView = itemView.findViewById(R.id.textViewDescription);
+        tripDateTextView = itemView.findViewById(R.id.textViewDate);
+        buttonEdit = itemView.findViewById(R.id.buttonEdit);
+        buttonDelete = itemView.findViewById(R.id.buttonDelete);
     }
 }

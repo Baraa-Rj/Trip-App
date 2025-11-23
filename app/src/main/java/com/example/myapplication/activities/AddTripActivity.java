@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.myapplication.R;
 
 import entity.Trip;
 import repo.TripRepository;
@@ -22,12 +23,16 @@ public class AddTripActivity extends AppCompatActivity {
     private ImageButton buttonBack;
     private TripRepository tripRepository;
 
+    private boolean isEditMode = false;
+    private Trip originalTrip;
+
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.example.myapplication.R.layout.activity_add_trip);
         tripRepository = TripRepository.getInstance();
         initializeViews();
+        loadEditData();
         initializeListeners();
     }
 
@@ -59,6 +64,37 @@ public class AddTripActivity extends AppCompatActivity {
         buttonBack = findViewById(com.example.myapplication.R.id.buttonBack);
     }
 
+    private void loadEditData() {
+        isEditMode = getIntent().getBooleanExtra("EDIT_MODE", false);
+
+        if (isEditMode) {
+            String tripName = getIntent().getStringExtra("TRIP_NAME");
+            String tripDestination = getIntent().getStringExtra("TRIP_DESTINATION");
+            String tripDate = getIntent().getStringExtra("TRIP_DATE");
+
+            originalTrip = new Trip(tripName, tripDestination, tripDate);
+
+            editTextTitle.setText(tripName);
+            editTextDescription.setText(tripDestination);
+
+            if (tripDate != null && !tripDate.isEmpty()) {
+                String[] dateParts = tripDate.split("/");
+                if (dateParts.length == 3) {
+                    try {
+                        int day = Integer.parseInt(dateParts[0]);
+                        int month = Integer.parseInt(dateParts[1]) - 1; // Month is 0-based
+                        int year = Integer.parseInt(dateParts[2]);
+                        datePicker.updateDate(year, month, day);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            buttonSaveTrip.setText(R.string.update_trip);
+        }
+    }
+
 
     private void initializeListeners() {
         buttonBack.setOnClickListener(v -> finish());
@@ -66,7 +102,6 @@ public class AddTripActivity extends AppCompatActivity {
             String title = editTextTitle.getText().toString().trim();
             String description = editTextDescription.getText().toString().trim();
 
-            // Validate input
             if (title.isEmpty()) {
                 editTextTitle.setError("Title is required");
                 return;
@@ -77,11 +112,18 @@ public class AddTripActivity extends AppCompatActivity {
             int year = datePicker.getYear();
             String date = day + "/" + month + "/" + year;
 
-            Trip newTrip = new Trip(title, description, date);
-            tripRepository.addTrip(newTrip);
+            Trip trip = new Trip(title, description, date);
 
-            Toast.makeText(this, "Trip Saved", Toast.LENGTH_SHORT).show();
-            finish(); // Close activity and return to previous screen
+            if (isEditMode && originalTrip != null) {
+                tripRepository.removeTrip(originalTrip);
+                tripRepository.addTrip(trip);
+                Toast.makeText(this, "Trip Updated", Toast.LENGTH_SHORT).show();
+            } else {
+                tripRepository.addTrip(trip);
+                Toast.makeText(this, "Trip Saved", Toast.LENGTH_SHORT).show();
+            }
+
+            finish();
         });
     }
 }
