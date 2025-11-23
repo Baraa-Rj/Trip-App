@@ -1,39 +1,55 @@
 package com.example.myapplication.activities;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.example.myapplication.R;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
+import adapter.ItemAdapter;
+import entity.Item;
 import entity.Trip;
 import repo.TripRepository;
 
 public class AddTripActivity extends AppCompatActivity {
 
     private Button buttonSaveTrip;
+    private Button buttonAddItem;
     private DatePicker datePicker;
     private EditText editTextDescription;
     private EditText editTextTitle;
     private ImageButton buttonBack;
+    private ListView listViewPackingItems;
+    private TextView textViewItemsEmpty;
     private TripRepository tripRepository;
 
     private boolean isEditMode = false;
     private Trip originalTrip;
+    private ArrayList<Item> packingItems;
+    private ItemAdapter itemAdapter;
 
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(com.example.myapplication.R.layout.activity_add_trip);
         tripRepository = TripRepository.getInstance();
+        packingItems = new ArrayList<>();
         initializeViews();
         loadEditData();
         initializeListeners();
+        setupPackingList();
     }
 
     @Override
@@ -58,10 +74,13 @@ public class AddTripActivity extends AppCompatActivity {
 
     private void initializeViews() {
         buttonSaveTrip = findViewById(com.example.myapplication.R.id.buttonSaveTrip);
+        buttonAddItem = findViewById(R.id.buttonAddItem);
         datePicker = findViewById(com.example.myapplication.R.id.datePicker);
         editTextDescription = findViewById(com.example.myapplication.R.id.editTextDescription);
         editTextTitle = findViewById(com.example.myapplication.R.id.editTextTitle);
         buttonBack = findViewById(com.example.myapplication.R.id.buttonBack);
+        listViewPackingItems = findViewById(R.id.listViewPackingItems);
+        textViewItemsEmpty = findViewById(R.id.textViewItemsEmpty);
     }
 
     private void loadEditData() {
@@ -71,8 +90,15 @@ public class AddTripActivity extends AppCompatActivity {
             String tripName = getIntent().getStringExtra("TRIP_NAME");
             String tripDestination = getIntent().getStringExtra("TRIP_DESTINATION");
             String tripDate = getIntent().getStringExtra("TRIP_DATE");
+            int tripPosition = getIntent().getIntExtra("TRIP_POSITION", -1);
 
-            originalTrip = new Trip(tripName, tripDestination, tripDate);
+            if (tripPosition != -1) {
+                originalTrip = tripRepository.getAllTrips().get(tripPosition);
+                // Load existing items
+                packingItems.addAll(originalTrip.getItems());
+            } else {
+                originalTrip = new Trip(tripName, tripDestination, tripDate);
+            }
 
             editTextTitle.setText(tripName);
             editTextDescription.setText(tripDestination);
@@ -98,6 +124,9 @@ public class AddTripActivity extends AppCompatActivity {
 
     private void initializeListeners() {
         buttonBack.setOnClickListener(v -> finish());
+
+        buttonAddItem.setOnClickListener(v -> showAddItemDialog());
+
         buttonSaveTrip.setOnClickListener(v -> {
             String title = editTextTitle.getText().toString().trim();
             String description = editTextDescription.getText().toString().trim();
@@ -114,6 +143,11 @@ public class AddTripActivity extends AppCompatActivity {
 
             Trip trip = new Trip(title, description, date);
 
+            // Add all packing items to the trip
+            for (Item item : packingItems) {
+                trip.addItem(item);
+            }
+
             if (isEditMode && originalTrip != null) {
                 tripRepository.removeTrip(originalTrip);
                 tripRepository.addTrip(trip);
@@ -125,5 +159,85 @@ public class AddTripActivity extends AppCompatActivity {
 
             finish();
         });
+    }
+
+    private void setupPackingList() {
+        itemAdapter = new ItemAdapter(this, packingItems);
+        listViewPackingItems.setAdapter(itemAdapter);
+
+        itemAdapter.setOnItemCheckedListener(() -> {
+            // Item checked state changed
+        });
+
+        itemAdapter.setOnDeleteClickListener(this::showDeleteItemDialog);
+
+        updateEmptyView();
+    }
+
+    private void showAddItemDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_item, null);
+
+        TextInputEditText editTextItemName = dialogView.findViewById(R.id.editTextItemName);
+        Spinner spinnerCategory = dialogView.findViewById(R.id.spinnerCategory);
+        Spinner spinnerQuantity = dialogView.findViewById(R.id.spinnerQuantity);
+        TextInputEditText editTextItemDescription = dialogView.findViewById(R.id.editTextItemDescription);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+
+        Button buttonSave = dialogView.findViewById(R.id.buttonSave);
+        Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
+
+        buttonSave.setOnClickListener(v -> {
+            String itemName = editTextItemName.getText() != null ? editTextItemName.getText().toString().trim() : "";
+            String category = spinnerCategory.getSelectedItem().toString();
+            String quantityStr = spinnerQuantity.getSelectedItem().toString();
+            String description = editTextItemDescription.getText() != null ? editTextItemDescription.getText().toString().trim() : "";
+
+            if (itemName.isEmpty()) {
+                editTextItemName.setError("Item name is required");
+                return;
+            }
+
+            int quantity = Integer.parseInt(quantityStr);
+            Item newItem = new Item(itemName, quantity, description, category);
+            packingItems.add(newItem);
+
+            itemAdapter.notifyDataSetChanged();
+            updateEmptyView();
+
+            Toast.makeText(this, "Item added successfully", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+
+        buttonCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void showDeleteItemDialog(Item item, int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Item")
+                .setMessage(getString(R.string.delete_item_confirm))
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    packingItems.remove(item);
+                    itemAdapter.notifyDataSetChanged();
+                    updateEmptyView();
+                    Toast.makeText(this, getString(R.string.item_deleted), Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void updateEmptyView() {
+        if (packingItems.isEmpty()) {
+            textViewItemsEmpty.setVisibility(View.VISIBLE);
+            listViewPackingItems.setVisibility(View.GONE);
+        } else {
+            textViewItemsEmpty.setVisibility(View.GONE);
+            listViewPackingItems.setVisibility(View.VISIBLE);
+        }
     }
 }

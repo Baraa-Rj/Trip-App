@@ -26,7 +26,10 @@
 
     <!-- Item related strings -->
     <string name="items_for_trip">Items for Trip</string>
+    <string name="packing_list">Packing List</string>
     <string name="add_item">Add Item</string>
+    <string name="add_item_button">+ Add Item</string>
+    <string name="no_items_added">No items added yet</string>
     <string name="item_name">Item Name</string>
     <string name="category">Category</string>
     <string name="quantity">Quantity</string>
