@@ -3,4 +3,9 @@
     <string name="welcome_to_my_app">Welcome to My App</string>
     <string name="add_new_trip">Add new Trip</string>
     <string name="view_my_trips">View My Trips</string>
+    <string name="my_trips_overview">My Trips Overview</string>
+    <string name="today">Today</string>
+    <string name="this_week">This week</string>
+    <string name="this_month">This Month</string>
+    <string name="this_year">This Year</string>
 </resources>
