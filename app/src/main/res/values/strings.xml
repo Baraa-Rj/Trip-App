@@ -23,4 +23,45 @@
     <string name="delete">delete</string>
     <string name="edit">edit</string>
     <string name="update_trip">Update Trip</string>
+
+    <!-- Item related strings -->
+    <string name="items_for_trip">Items for Trip</string>
+    <string name="add_item">Add Item</string>
+    <string name="item_name">Item Name</string>
+    <string name="category">Category</string>
+    <string name="quantity">Quantity</string>
+    <string name="description">Description</string>
+    <string name="packed">Packed</string>
+    <string name="packing_progress">Packing Progress: %1$d of %2$d items packed</string>
+    <string name="no_items">No items added yet. Tap + to add items.</string>
+    <string name="delete_item_confirm">Are you sure you want to delete this item?</string>
+    <string name="item_deleted">Item deleted successfully</string>
+
+    <!-- Categories -->
+    <string-array name="item_categories">
+        <item>Clothing</item>
+        <item>Toiletries</item>
+        <item>Electronics</item>
+        <item>Documents</item>
+        <item>Medicines</item>
+        <item>Food &amp; Snacks</item>
+        <item>Sports &amp; Recreation</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- Quantities -->
+    <string-array name="item_quantities">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+    </string-array>
 </resources>

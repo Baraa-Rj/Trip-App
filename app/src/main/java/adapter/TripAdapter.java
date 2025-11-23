@@ -20,6 +20,10 @@ public class TripAdapter extends RecyclerView.Adapter<TripViewHolder> {
     private OnItemClickListener listener;
     private OnEditClickListener editClickListener;
     private OnDeleteClickListener deleteClickListener;
+    private OnDoubleClickListener doubleClickListener;
+
+    private static final long DOUBLE_CLICK_TIME_DELTA = 300; // milliseconds
+    private long lastClickTime = 0;
 
     @NonNull
     @Override
@@ -33,6 +37,24 @@ public class TripAdapter extends RecyclerView.Adapter<TripViewHolder> {
         Trip trip = trips.get(position);
 
         holder.bindData(trip.getTripName(), trip.getTripDate(), trip.getTripDestination());
+
+        // Double-click listener on the entire item view
+        holder.itemView.setOnClickListener(v -> {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+                // Double click detected
+                if (doubleClickListener != null) {
+                    doubleClickListener.onDoubleClick(trip, position);
+                }
+                lastClickTime = 0; // Reset
+            } else {
+                // Single click
+                if (listener != null) {
+                    listener.onItemClick(trip);
+                }
+            }
+            lastClickTime = clickTime;
+        });
 
         holder.getButtonEdit().setOnClickListener(v -> {
             if (editClickListener != null) {
@@ -71,6 +93,10 @@ public class TripAdapter extends RecyclerView.Adapter<TripViewHolder> {
         void onDeleteClick(Trip trip, int position);
     }
 
+    public interface OnDoubleClickListener {
+        void onDoubleClick(Trip trip, int position);
+    }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
@@ -81,5 +107,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripViewHolder> {
 
     public void setOnDeleteClickListener(OnDeleteClickListener deleteClickListener) { // Fixed parameter type
         this.deleteClickListener = deleteClickListener;
+    }
+
+    public void setOnDoubleClickListener(OnDoubleClickListener doubleClickListener) {
+        this.doubleClickListener = doubleClickListener;
     }
 }

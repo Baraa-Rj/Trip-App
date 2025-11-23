@@ -2,17 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="#F5F5F5"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
         android:background="@android:color/white"
         android:elevation="4dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <ImageButton
             android:id="@+id/buttonBack"
@@ -27,11 +27,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/my_trips_overview"
-            android:textSize="24sp"
-            android:textStyle="bold"
             android:textColor="#333333"
-            android:gravity="center" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <Space
             android:layout_width="48dp"
@@ -42,62 +42,85 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/white"
-        android:layout_marginTop="8dp">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/filter_by"
-            android:textSize="14sp"
-            android:textStyle="bold"
             android:textColor="#666666"
-            android:layout_marginBottom="8dp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <RadioGroup
             android:id="@+id/radioGroupTrips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/radioToday"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/today"
-                android:textSize="12sp"
-                android:padding="4dp" />
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/radioThisWeek"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/this_week"
-                android:textSize="12sp"
-                android:padding="4dp" />
+                <RadioButton
+                    android:id="@+id/radioAll"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="All Trips"
+                    android:textSize="12sp" />
 
-            <RadioButton
-                android:id="@+id/radioThisMonth"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/this_month"
-                android:textSize="12sp"
-                android:padding="4dp" />
+                <RadioButton
+                    android:id="@+id/radioToday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/today"
+                    android:textSize="12sp" />
 
-            <RadioButton
-                android:id="@+id/radioThisYear"
-                android:layout_width="0dp"
+                <RadioButton
+                    android:id="@+id/radioThisWeek"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/this_week"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/this_year"
-                android:textSize="12sp"
-                android:padding="4dp" />
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioThisMonth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/this_month"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/radioThisYear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/this_year"
+                    android:textSize="12sp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
 
         </RadioGroup>
 
@@ -107,8 +130,8 @@
         android:id="@+id/recyclerViewTrips"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginTop="8dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingTop="4dp"
         android:paddingBottom="4dp" />
