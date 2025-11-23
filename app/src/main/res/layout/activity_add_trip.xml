@@ -11,6 +11,15 @@
     android:orientation="vertical"
     android:padding="24dp">
 
+    <ImageButton
+        android:id="@+id/buttonBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/back"
+        android:src="@android:drawable/ic_menu_revert" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -5,6 +5,7 @@ public class Trip {
     private String tripDestination;
     private String tripDate;
 
+
     public Trip(String tripName, String tripDestination, String tripDate) {
         setTripName(tripName);
         setTripDestination(tripDestination);

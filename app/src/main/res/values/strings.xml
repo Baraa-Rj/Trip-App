@@ -17,4 +17,6 @@
     <string name="save">Save</string>
     <string name="i_will_visit_mom">I will visit mom</string>
     <string name="trip_date">Trip Date</string>
+    <string name="back">Back</string>
+    <string name="filter_by">Filter By:</string>
 </resources>

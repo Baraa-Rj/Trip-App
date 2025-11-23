@@ -1,6 +1,7 @@
 package com.example.myapplication.activities;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ public class ViewTripActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RadioGroup radioGroup;
     private TripAdapter adapter;
+    private ImageButton buttonBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +29,9 @@ public class ViewTripActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(v -> finish());
+
         recyclerView = findViewById(R.id.recyclerViewTrips);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -49,15 +54,11 @@ public class ViewTripActivity extends AppCompatActivity {
         });
     }
     private void loadData(){
-        // Load with default filter (today)
         loadFilteredData("today");
     }
 
     private void loadFilteredData(String filter) {
         ArrayList<Trip> trips = new ArrayList<>();
-
-        // Sample data - in a real app, you would filter based on actual dates
-        // For demonstration, showing different trips based on filter
         switch (filter) {
             case "today":
                 trips.add(new Trip("Beach Vacation", "Hawaii", "2023-12-20"));
@@ -78,9 +79,7 @@ public class ViewTripActivity extends AppCompatActivity {
                 trips.add(new Trip("Safari Adventure", "Kenya", "2025-08-05"));
                 break;
         }
-
         adapter.updateData(trips);
-
     }
 
 }

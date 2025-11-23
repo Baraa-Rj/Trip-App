@@ -11,6 +11,7 @@ import com.example.myapplication.R;
 
 public class MainActivity extends AppCompatActivity {
     private Button buttonViewTrips;
+    private Button buttonAddTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +24,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeButtons() {
         buttonViewTrips = findViewById(R.id.buttonViewTrips);
+        buttonAddTrip = findViewById(R.id.buttonAddTrip);
     }
+
     public void initializeListeners() {
         buttonViewTrips.setOnClickListener(v -> {
             startActivity(new Intent(this, ViewTripActivity.class));
+        });
+        buttonAddTrip.setOnClickListener(v -> {
+            startActivity(new Intent(this, AddTripActivity.class));
         });
     }
 
