@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import entity.Item;
 
 public class ItemAdapter extends BaseAdapter {
-    private Context context;
+    private final Context context;
     private ArrayList<Item> items;
     private OnItemCheckedListener onItemCheckedListener;
     private OnDeleteClickListener onDeleteClickListener;
